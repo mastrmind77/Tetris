@@ -2,19 +2,42 @@ const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 var paused = false;
 
+//const pauseKey : false;
+//const enterKey : false;
+
 context.scale(20, 20);
 
 //Toggles game state to paused
-function togglePause() {
-    if (!paused)
-    {
-        paused = true;
-    } else if (paused)
-    {
-       paused= false;
-    }
+// function togglePause() {
+//     if (!paused)
+//     {
+//         paused = true;
+//     } else if (paused)
+//     {
+//        paused= false;
+//     }
+//
+// }
 
+function togglePause() {
+  paused = !paused
+  var x = document.getElementById("status");
+  if (paused) {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+    update();
 }
+
+function startGame() {
+  playerReset();
+}
+
+// function pauseGame() {
+//     paused = !paused; // toggle the paused value (false <-> true)
+//     if (!paused) loop(); // restart loop
+// }
 
 function arenaSweep() {
   let rowCount = 1;
@@ -231,15 +254,19 @@ let lastTime = 0;
 
 //draws the animation frames
 function update(time = 0){
-  const deltaTime = time - lastTime;
-  lastTime = time;
+//    currentState(); // call the current game state
+    const deltaTime = time - lastTime;
+    lastTime = time;
 
-  dropCounter += deltaTime;
-  if (dropCounter > dropInterval) {
-      playerDrop();
+    dropCounter += deltaTime;
+    if (dropCounter > dropInterval) {
+        playerDrop();
+    }
+    draw();
+    if (!paused) {
+      requestAnimationFrame(update);
   }
-  draw();
-  requestAnimationFrame(update);
+
 }
 
 //Updates the score in the HTML
@@ -283,6 +310,8 @@ document.addEventListener('keydown', event => {
       playerRotate(1);
   } else if (event.keyCode === 80) {
       togglePause(); //Press P to pause
+  } else if (event.keyCode === 27) {
+      startGame(); //Press P to pause
   }
 });
 
@@ -293,6 +322,54 @@ document.addEventListener('keydown', event => {
 //  }
 //};
 
+
+// set up keyboard IO
+// const keys = {
+//     KeyP : false,
+//     Enter : false,
+//     listener(e){
+//        if(keys[e.code] !== undefined){
+//            keys[e.code] = e.type === "keydown";
+//            e.preventDefault();
+//         }
+//     }
+// }
+// addEventListener("keydown",keys.listener);
+// addEventListener("keyup",keys.listener);
+
+
+// the current game state
+// var currentState = startGame;
+//
+// function startGame (){
+//     // code to do a single frame of start game
+//    // display press enter to start
+//    if(keys.Enter){
+//       keys.Enter = false;
+//       currentState = game;  // start the game
+//    }
+// }
+// function pause(){
+//     // code to do a single frame of pause
+//    // display pause
+//     if(pauseKey = true){
+//        currentState = pause;   // resume game
+//     }
+//
+// }
+// function game(){
+//     // code to do a single frame of game
+//     if(keys.KeyP){
+//        keys.KeyP = false; // turn off key
+//        currentState = pause;  // pause game
+//     }
+// }
+// function mainLoop(time){
+//     currentState(); // call the current game state
+//     requestAnimationFrame(mainLoop);
+// }
+
 playerReset();
 updateScore();
-update();
+
+  update();
